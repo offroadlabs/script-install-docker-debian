@@ -2,31 +2,6 @@
 
 echo "Bienvenue dans le script d'installation de Docker pour Debian !"
 
-# Demander si l'utilisateur souhaite ajouter un swap et de quelle taille
-echo "Souhaitez-vous ajouter un swap ? (Entrez non, 1, 2, 6, 8, 12 pour choisir la taille en Go)"
-read -p "Veuillez entrer votre choix (par défaut : non) : " swap_choice
-
-# Définir "non" comme valeur par défaut si l'utilisateur n'a rien saisi
-swap_choice=${swap_choice:-non}
-
-if [ "$swap_choice" != "non" ]; then
-  echo "Configuration d'un swap de ${swap_choice}G..."
-  
-  # Désactiver le swap existant (s'il y en a un)
-  dphys-swapfile swapoff
-  
-  # Modifier la taille du swap
-  sed -i "s/^CONF_SWAPSIZE=.*$/CONF_SWAPSIZE=${swap_choice}/" /etc/dphys-swapfile
-  
-  # Réactiver le swap avec la nouvelle taille
-  dphys-swapfile setup
-  dphys-swapfile swapon
-  
-  echo "Swap de ${swap_choice}G configuré avec succès."
-else
-  echo "Aucun swap supplémentaire ne sera configuré."
-fi
-
 # Mettre à jour le système
 echo "Mise à jour du système..."
 apt-get update
