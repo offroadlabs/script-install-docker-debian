@@ -13,6 +13,20 @@ if [ "$swap_size" == "non" ]; then
 elif [[ "$swap_size" =~ ^(1|2|6|8|12)$ ]]; then
     swapfile="/swapfile"
 
+    # Vérifier si le fichier swap existe déjà
+    if [ -f "$swapfile" ]; then
+        echo "Le fichier swap existe déjà. Désactivation et suppression en cours..."
+        # Désactiver le swap
+        swapoff $swapfile
+
+        # Supprimer l'entrée du swap dans /etc/fstab
+        sed -i "\|$swapfile|d" /etc/fstab
+
+        # Supprimer le fichier swap
+        rm -f $swapfile
+        echo "Ancien fichier swap supprimé."
+    fi
+
     # Créer un fichier swap de la taille demandée
     fallocate -l ${swap_size}G $swapfile
 
